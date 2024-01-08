@@ -51,7 +51,7 @@ public class App {
 
     private boolean exist(Player nickname) {
         for (Player p : players) {
-            if (p.getNickname().equals(nickname)) {
+            if (p.getNickname().equals(nickname.getNickname())) {
                 return true;
             }
         }

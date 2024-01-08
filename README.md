@@ -1,3 +1,20 @@
+# Refactor Step 1 - Setup for Refactoring
+
+## Goal
+
+Write an integration test that covers a decent chunk of code.
+We choose to cover all the 'Create Player' scenarios so we can start initial refactoring.
+We try to re-use the existing libraries as much as possible to prevent the introduction of new frameworks or apis.
+
+
+## Steps done
+
+* Add an integration test to create the first player
+* Extend the integration test to cover adding a player with existing nickname
+* First bug already found and fixed
+* Extend the integration test to cover adding too many players
+
+
 # Goose Game API
 The rule of this classic game are explained [here](https://en.wikipedia.org/wiki/Game_of_the_Goose).
 
