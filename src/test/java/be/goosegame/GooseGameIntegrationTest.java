@@ -33,11 +33,11 @@ public class GooseGameIntegrationTest {
     @Test
     public void createPlayerTest() throws Exception {
         // Create a Player
-        Response response = createPlayer("Thijs", "CoolDude");
+        final Response response = createPlayer("Thijs", "CoolDude");
         assertCreatePlayerSuccessResponse("Thijs", "CoolDude", response);
 
         // Create a Player with same nickname
-        Response duplicatePlayerResponse = createPlayer("Thijs", "CoolDude");
+        final Response duplicatePlayerResponse = createPlayer("Thijs", "CoolDude");
         assertPlayerAlreadyExistsResponse("CoolDude", duplicatePlayerResponse);
 
         // Add 3 more Player
@@ -47,25 +47,25 @@ public class GooseGameIntegrationTest {
 
 
         // Create a Player
-        Response tooManyPlayersResponse = createPlayer("Jeroen", "Jerre");
+        final Response tooManyPlayersResponse = createPlayer("Jeroen", "Jerre");
         assertTooManyPlayersResponse("Thijs", "Player1", "Player2", "Player3", tooManyPlayersResponse);
 
 
     }
 
-    private void assertPlayerAlreadyExistsResponse(String expectedNickname, Response response) throws Exception{
+    private void assertPlayerAlreadyExistsResponse(final String expectedNickname, final Response response) throws Exception {
         assertEquals(400, response.code());
         assertEquals(String.format("nickname already taken: %s", expectedNickname), new Utils().fromJson(response.body().string()).getString("error"));
     }
 
-    private void assertTooManyPlayersResponse(String player1, String player2, String player3, String player4, Response response) throws Exception{
+    private void assertTooManyPlayersResponse(final String player1, final String player2, final String player3, final String player4, final Response response) throws Exception {
         assertEquals(400, response.code());
-        assertEquals(String.format("too many players already: %s, %s, %s, %s", player1, player2, player3, player4),new Utils().fromJson(response.body().string()).getString("error"));
+        assertEquals(String.format("too many players already: %s, %s, %s, %s", player1, player2, player3, player4), new Utils().fromJson(response.body().string()).getString("error"));
     }
 
 
-    private Response createPlayer(String name, String nickname) throws Exception{
-        String body = String.format("{ \"name\": \"%s\", \"nickname\": \"%s\"}", name, nickname);
+    private Response createPlayer(final String name, final String nickname) throws Exception {
+        final String body = String.format("{ \"name\": \"%s\", \"nickname\": \"%s\"}", name, nickname);
         return httpClient.newCall(
                         new Request.Builder()
                                 .url(CREATE_PLAYER_URL)
@@ -74,9 +74,9 @@ public class GooseGameIntegrationTest {
                 .execute();
     }
 
-    private void assertCreatePlayerSuccessResponse(String expectedName, String expectedNickname, Response response) throws Exception{
+    private void assertCreatePlayerSuccessResponse(final String expectedName, final String expectedNickname, final Response response) throws Exception {
         assertEquals(201, response.code());
-        JSONObject jsonObject = new Utils().fromJson(response.body().string());
+        final JSONObject jsonObject = new Utils().fromJson(response.body().string());
         assertEquals(expectedName, jsonObject.get("name"));
         assertEquals(expectedNickname, jsonObject.get("nickname"));
         assertNotNull(UUID.fromString((String) jsonObject.get("id")));

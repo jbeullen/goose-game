@@ -1,24 +1,32 @@
-# Refactor Step 1 - Setup for Refactoring
+# Refactor Step 2 - Refactor Create Player functionality
 
 ## Goal
 
-Write an integration test that covers a decent chunk of code.
-We choose to cover all the 'Create Player' scenarios so we can start initial refactoring.
-We try to re-use the existing libraries as much as possible to prevent the introduction of new frameworks or apis.
-
+We want to achieve a hexagonal design where Rest API and Domain Logic are seperated.
+The End Game is a Goose Game that is ported to the Sparks framework that turns it into an API.
+On the other side we want to create an Adapter for Rolling the dice.
+This will improve readability but also make it more extendable.
+We want to start introducing immutability wherever we can.
+We should watch out that we don't reinvent the wheel.
+Extract the existing logic when implementing the new Domain Layer, letting the IDE do the heavy lifting.
+A good starting point is to take a copy of the code in App and remove all the Spark references.
 
 ## Steps done
 
-* Add an integration test to create the first player
-* Extend the integration test to cover adding a player with existing nickname
-* First bug already found and fixed
-* Extend the integration test to cover adding too many players
-
+* Introduce immutability: IDE plugins (e.g. Save Actions) + Fix existing code as we go
+* Add assertj api for advanced assert support
+* Update the Player class: add constructor from primitives
+* Create GooseGame domain API + Exception + Impl + Tests
+* Implement Domain API case by case using TDD/BDD
+* Refactor App by implementing the domain API.
+* Clean up dead code
 
 # Goose Game API
+
 The rule of this classic game are explained [here](https://en.wikipedia.org/wiki/Game_of_the_Goose).
 
 ### Add a player to the game
+
 To add a new player to the game, send a POST request like this:
 
 `POST /players`

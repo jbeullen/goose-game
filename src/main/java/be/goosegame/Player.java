@@ -1,28 +1,27 @@
 package be.goosegame;
 
-import org.json.JSONObject;
-
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
 public class Player {
-    private String name;
-    private String nickname;
-    private UUID uuid;
+    private final String name;
+    private final String nickname;
+    private final UUID uuid;
     private int position = 0;
 
-    public Player() {
-    }
-
-    public Player(JSONObject json) {
-        this.name = json.getString("name");
-        this.nickname = json.getString("nickname");
-        this.uuid = UUID.randomUUID();
+    public Player(final String name, final String nickname, final UUID uuid) {
+        this.name = name;
+        this.nickname = nickname;
+        this.uuid = uuid;
     }
 
     public int getPosition() {
         return position;
+    }
+
+    public void setPosition(final int position) {
+        this.position = position;
     }
 
     public UUID getUuid() {
@@ -33,25 +32,21 @@ public class Player {
         return name;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
     public String getNickname() {
         return nickname;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Player player = (Player) o;
-        return Objects.equals(getUuid(), player.getUuid());
+    public int hashCode() {
+        return Objects.hash(getUuid());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getUuid());
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Player player = (Player) o;
+        return Objects.equals(getUuid(), player.getUuid());
     }
 
     @Override
