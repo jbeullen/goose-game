@@ -21,7 +21,6 @@ public class App {
 
     private final DiceRollerService diceRollerService = new DiceRollerService();
     private final GooseGame game = new GooseGameImpl();
-    private boolean gameOver = false;
     private Player nextPlayer = null;
 
     public String createPlayer(final Request req, final Response res) {
@@ -42,44 +41,35 @@ public class App {
 
     public String roll(final Request req, final Response res) {
         res.type("application/json");
-        if (!moreThanFourPlayer()) {
-            res.status(400);
-            return "{\"error\": \"Game not started, waiting for more players\"}";
-        }
-        if (gameOver) {
-            res.status(400);
-            return "{\"error\": \"The game is over\"}";
-        }
-        if (req.params("id") != null) {
-            // Does it still throw exception?
-            try {
-                if (nextPlayer == null) {
-                    nextPlayer = getPlayers().stream().findFirst().orElse(null);
-                }
-                final Player player = getPlayers().stream().filter(it -> it.getUuid().toString().equals(req.params("id"))).collect(Collectors.toList()).get(0);
-                if (!nextPlayer.equals(player)) {
-                    res.status(400);
-                    return "{\"error\": \"Is not your turn " + player.getName() + "!\"}";
-                }
-                final String movePlayer = movePlayer(player);
-                nextPlayer = getPlayers().get((getPlayers().indexOf(player) + 1) % getPlayers().size());
-                logger.info("next player is {}", nextPlayer);
+        try {
+            final String id = req.params("id");
+            game.roll(id);
 
-                res.status(200);
-                return movePlayer;
-            } catch (final Exception e) {
-                logger.error(e.getMessage());
+            if (id != null) {
+                // Does it still throw exception?
+                try {
+                    if (nextPlayer == null) {
+                        nextPlayer = getPlayers().stream().findFirst().orElse(null);
+                    }
+                    final Player player = getPlayers().stream().filter(it -> it.getUuid().toString().equals(id)).collect(Collectors.toList()).get(0);
+                    final String movePlayer = movePlayer(player);
+                    nextPlayer = getPlayers().get((getPlayers().indexOf(player) + 1) % getPlayers().size());
+                    logger.info("next player is {}", nextPlayer);
+
+                    res.status(200);
+                    return movePlayer;
+                } catch (final Exception e) {
+                    logger.error(e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            } else {
                 res.status(400);
-                return "{\"error\": \"User rolling dice was not in game!\"}";
+                return "{\"error\": \"User rolling dice was not specified!\"}";
             }
-        } else {
+        } catch (final GameException e) {
             res.status(400);
-            return "{\"error\": \"User rolling dice was not specified!\"}";
+            return String.format("{\"error\": \"%s\"}", e.getMessage());
         }
-    }
-
-    private boolean moreThanFourPlayer() {
-        return getPlayers().size() >= 4;
     }
 
     private String movePlayer(final Player currentPlayer) {
@@ -115,7 +105,6 @@ public class App {
         }
         if (currentPlayer.getPosition() == 63) {
             message += String.format("%s wins!", currentPlayer.getName());
-            gameOver = true;
         }
 
         logger.info("{} moved", currentPlayer);
