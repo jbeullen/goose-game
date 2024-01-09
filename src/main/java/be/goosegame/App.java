@@ -12,7 +12,7 @@ import spark.Request;
 import spark.Response;
 
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,7 +21,6 @@ public class App {
 
     private final DiceRollerService diceRollerService = new DiceRollerService();
     private final GooseGame game = new GooseGameImpl();
-    public LinkedList<Player> players = new LinkedList<>();
     private boolean gameOver = false;
     private Player nextPlayer = null;
 
@@ -54,13 +53,16 @@ public class App {
         if (req.params("id") != null) {
             // Does it still throw exception?
             try {
-                final Player player = players.stream().filter(it -> it.getUuid().toString().equals(req.params("id"))).collect(Collectors.toList()).get(0);
+                if (nextPlayer == null) {
+                    nextPlayer = getPlayers().stream().findFirst().orElse(null);
+                }
+                final Player player = getPlayers().stream().filter(it -> it.getUuid().toString().equals(req.params("id"))).collect(Collectors.toList()).get(0);
                 if (!nextPlayer.equals(player)) {
                     res.status(400);
                     return "{\"error\": \"Is not your turn " + player.getName() + "!\"}";
                 }
                 final String movePlayer = movePlayer(player);
-                nextPlayer = players.get((players.indexOf(player) + 1) % players.size());
+                nextPlayer = getPlayers().get((getPlayers().indexOf(player) + 1) % getPlayers().size());
                 logger.info("next player is {}", nextPlayer);
 
                 res.status(200);
@@ -77,7 +79,7 @@ public class App {
     }
 
     private boolean moreThanFourPlayer() {
-        return players.size() >= 4;
+        return getPlayers().size() >= 4;
     }
 
     private String movePlayer(final Player currentPlayer) {
@@ -91,7 +93,7 @@ public class App {
         currentPlayer.setPosition(newPosition);
         String message = String.format("%s moves from %s to %s. ", currentPlayer.getName(), cellName(startPosition), cellName(newPosition));
 
-        final Optional<Player> playerInPosition = players.stream().filter(p -> p.getPosition() == currentPlayer.getPosition() && !p.getUuid().equals(currentPlayer.getUuid())).findFirst();
+        final Optional<Player> playerInPosition = getPlayers().stream().filter(p -> p.getPosition() == currentPlayer.getPosition() && !p.getUuid().equals(currentPlayer.getUuid())).findFirst();
         if (playerInPosition.isPresent()) {
             playerInPosition.get().setPosition(startPosition);
             message += String.format("On %s there was %s, who is moved back to %s. ", newPosition, playerInPosition.get().getName(), startPosition);
@@ -139,5 +141,9 @@ public class App {
         if (position == 6)
             return "The Bridge";
         return String.valueOf(position);
+    }
+
+    private List<Player> getPlayers() {
+        return game.getPlayers();
     }
 }

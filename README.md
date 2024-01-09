@@ -1,19 +1,24 @@
-# Refactor Step 3 - Dice Adapter
+# Refactor Step 3 - Roll Functionality
 
 ## Goal
 
-In order to move our attention to the roll functionality, we need to be able to control the rolling of the dice.
-We want to implement this as an adapter as part of our hexagonal architecture.
-Here we invert the dependency and look at what the game needs.
+We want to tackle the roll functionality of the application.
 
-The end game should be a Goose Game that is agnostic of the way that dice rolling is implemented.
+In order to make sure we don't break the existing application, we start by extending the integration test.
+A simulation of a full game is done to cover all scenarios.
+
+Again we will separate the Spark Code and Domain Logic, by extracting that what we need from App, letting the IDE
+the heavy lifting.
+We identify the different scenarios, write a BDD test and implement the behaviour using the extracted code as a starting
+point.
+
+The integration test can be used to verify the Spark API still works as designed.
 
 ## Steps done
 
-* Create DiceRollerAdapter + DTO + Test
-* Implement Adapter using the DiceRollerService as base and extracting parsing logic from App
-* Issue found: dice rolling api has been decommissioned
-* Refactor DiceRollerService to use random number generator
+* Factor out the players list in App by accessing the list from GooseGame ( Forgot to this in step 2)
+* Extend the integration test to simulate a full game including error scenarios
+* Separate the Spark API code from the game logic using IDE shortcuts
 
 # Goose Game API
 
