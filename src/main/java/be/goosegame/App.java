@@ -2,6 +2,7 @@ package be.goosegame;
 
 import be.goosegame.domain.GameException;
 import be.goosegame.domain.GooseGame;
+import be.goosegame.domain.impl.DiceRollerService;
 import be.goosegame.domain.impl.GooseGameImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -120,7 +121,7 @@ public class App {
     }
 
     private JSONArray roll() {
-        final JSONObject jsonObject = diceRollerService.roll();
+        final JSONObject jsonObject = diceRollerService.rollOld();
         return jsonObject.getJSONArray("dice");
     }
 

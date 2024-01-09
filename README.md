@@ -1,33 +1,19 @@
-# Refactor Step 2 - Refactor Create Player functionality
+# Refactor Step 3 - Dice Adapter
 
 ## Goal
 
-We want to achieve a hexagonal design where Rest API and Domain Layer are seperated.
-The End Game is a Goose Game that is ported to the Sparks framework that turns it into an API.
-On the other side we want to create an Adapter for Rolling the dice.
-This will improve readability but also make it more extendable.
+In order to move our attention to the roll functionality, we need to be able to control the rolling of the dice.
+We want to implement this as an adapter as part of our hexagonal architecture.
+Here we invert the dependency and look at what the game needs.
 
-The Domain Layer should contain only queries and actions.
-We expose only what is needed.
-We want to start introducing immutability wherever we can.
-
-All new code should be under test.
-For the Domain Layer tests should behaviour driven, so we can always refactor the code as we see fit and
-can really focus on the features themselves.
-
-We should watch out that we don't reinvent the wheel.
-Extract the existing logic when implementing the new Domain Layer, letting the IDE do the heavy lifting.
-A good starting point is to take a copy of the code in App and remove all the Spark references.
+The end game should be a Goose Game that is agnostic of the way that dice rolling is implemented.
 
 ## Steps done
 
-* Introduce immutability: IDE plugins (e.g. Save Actions) + Fix existing code as we go
-* Add assertj api for advanced assert support
-* Update the Player class: add constructor from primitives
-* Create GooseGame domain API + Exception + Impl + Tests
-* Implement Domain API case by case using TDD/BDD
-* Refactor App by implementing the domain API.
-* Clean up dead code
+* Create DiceRollerAdapter + DTO + Test
+* Implement Adapter using the DiceRollerService as base and extracting parsing logic from App
+* Issue found: dice rolling api has been decommissioned
+* Refactor DiceRollerService to use random number generator
 
 # Goose Game API
 
