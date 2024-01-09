@@ -2,11 +2,19 @@
 
 ## Goal
 
-We want to achieve a hexagonal design where Rest API and Domain Logic are seperated.
+We want to achieve a hexagonal design where Rest API and Domain Layer are seperated.
 The End Game is a Goose Game that is ported to the Sparks framework that turns it into an API.
 On the other side we want to create an Adapter for Rolling the dice.
 This will improve readability but also make it more extendable.
+
+The Domain Layer should contain only queries and actions.
+We expose only what is needed.
 We want to start introducing immutability wherever we can.
+
+All new code should be under test.
+For the Domain Layer tests should behaviour driven, so we can always refactor the code as we see fit and
+can really focus on the features themselves.
+
 We should watch out that we don't reinvent the wheel.
 Extract the existing logic when implementing the new Domain Layer, letting the IDE do the heavy lifting.
 A good starting point is to take a copy of the code in App and remove all the Spark references.
